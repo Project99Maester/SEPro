@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if dicts %}
+{% if name %}
 <div class="notification is-danger">
-    {{ dicts }}
+    Name of Book: {{ name }} <br>
+    Author of Book: {{ author }} <br>
+    Publisher of the Book: {{ Pub }} <br>
+    Rack Number: {{ rack }} <br>
+    The ISBN are: 
     {% for i in lis %}
     <br>
     {{ i }}

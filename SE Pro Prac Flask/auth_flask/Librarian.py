@@ -82,11 +82,7 @@ class Librarian():
         Print all the Member Details.
         """
         print("Deadline of These Members are Passed:")
-        for Members in self.__db.IssueDeadlinePassed():
-            print("-"*50)
-            print(Members)
-        else:
-            print('No Members Deadline Passed')
+        return self.__db.IssueDeadlinePassed()
         
     def ManageMember(self,choice,name=None,email=None,Category=None,MembershipCode=None):
         if choice==1:

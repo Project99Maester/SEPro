@@ -1,4 +1,5 @@
 from datetime import timedelta
+from os import name
 from flask import Blueprint, render_template,flash,url_for,redirect
 from flask.globals import request
 # from flask.helpers import flash, url_for
@@ -24,7 +25,7 @@ def index():
                 Author="Author",
                 Publisher="Publisher",
                 Rack=1,
-                LastIssued=datetime.date.today()-timedelta(days=6*365),
+                LastIssued=datetime.date.today(),#-timedelta(days=6*365),
                 Available=True
             )
         )
@@ -157,7 +158,7 @@ def AddBook():
                 rack=rack,
                 num=num
             )
-            return render_template('show.html',dicts="Name of Book: "+name+" Author of Book: "+author+" Publisher of the Book: "+Pub+" Rack Number: "+rack+". The ISBN are:",lis=lis)
+            return render_template('show.html',name=name,author=author,Pub=Pub,rack=rack,lis=lis)
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
@@ -211,21 +212,48 @@ def ReturnBook():
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
 
-@main.route('/stats')
+@main.route('/stats',methods=['GET','POST'])
 @login_required
 def Statistics():
     if current_user.type=='admin':
-        lis=Librarian.Librarian(name=current_user.name).Stats()
-        return render_template('Stats.html',books=lis)
+        if request.method=='GET':
+            lis=Librarian.Librarian(name=current_user.name).Stats()
+            return render_template('Stats.html',books=lis)
+        else:
+            isbn=request.form['options']
+            if isbn:
+                # Call Remove Member Function from the Bussiness Logic
+                resp=Librarian.Librarian(name=current_user.name).BookManage(
+                    choice=0,
+                    ISBN=isbn
+                    )
+                if resp[0]:
+                    flash('Book with ISBN {} is Removed'.format(isbn))
+                else:
+                    if resp[1]==1:
+                        flash('Book with ISBN {} Cannot Be Removed as Issued to Member with ISBN {}'.format(isbn,resp[2]))
+                    else:
+                        flash('Book with ISBN {} Cannot Be Removed as Reserved by Member with ISBN {}. Check after 7 days.'.format(isbn,resp[2]))
+            return redirect(url_for('main.Statistics'))
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
 
-@main.route('/overdue')
+@main.route('/overdue',methods=['GET','POST'])
 @login_required
 def Overdue():
     if current_user.type=='admin':
-        pass
+        lis=Librarian.Librarian(name=current_user.name).Overdue()
+        if request.method == 'GET':
+            # ALERT ALERT CHANGE IT AFTERWARDS
+            return render_template('Overdue.html',lis=[{'name':'Subhasish','MembershipCode':'123'}])
+        else:
+            """
+            Send Email
+            """
+            # ALERT ALERT CHANGE IT AFTERWARDS
+            flash("Message Sent to All the Defaulters.")
+            return redirect(url_for('main.Overdue'))
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
