@@ -4,7 +4,7 @@ Use the requirement file for environment (use "pip install -r requirements_pip.t
 
 Install Postgresql
 
-change SEProGithub\SE Pro Prac Flask\auth_flask\DataBase.py
+change SE Pro Prac Flask\auth_flask\DataBase.py
 
 Inside SE Pro Prac Flask file run in terminal:
 
