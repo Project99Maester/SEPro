@@ -1,6 +1,6 @@
 # SEPro
 
-Use the requirement file for environment
+Use the requirement file for environment (use "pip install -r requirements_pip.txt")
 
 Install Postgresql
 
