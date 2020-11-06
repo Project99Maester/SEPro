@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Remove Books</h3>
+    <div class="box">
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.
+            </div>
+        {% endif %}
+        {% endwith %}
+        {% if books %}
+        <form method="POST" action="/remBook">
+                {% for book in books %}
+                <div class="field">
+                    <div class="control">
+                        <input type="radio" name="options" id="{{ book.ISBN }}" value="{{ book.ISBN }}" class="input-is-large">{{ book.Title }}:{{ book.Author }}:{{ book.ISBN }}</input>
+                    </div>
+                </div>
+                {% endfor %}
+            <button class="button is-block is-info is-large is-fullwidth">Remove Book</button>
+        </form>
+        {% else %}
+        <div class="field">
+            <div class="control">
+                All Books are Issued.
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

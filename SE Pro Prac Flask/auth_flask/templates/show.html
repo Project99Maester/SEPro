@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if dicts %}
+<div class="notification is-danger">
+    {{ dicts }}
+    {% for i in lis %}
+    <br>
+    {{ i }}
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

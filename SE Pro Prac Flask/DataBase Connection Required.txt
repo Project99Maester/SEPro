@@ -1,0 +1,70 @@
+DataBase Connection Required
+
+Librarian::Return 
+return True if book with ISBN is reserved.
+
+Librarian::Return 
+Remove entry from Issue Table for the ISBN and MembershipCode
+
+Librarian::Return 
+Increase the Num_Of_Books_To_Be_Issued in MemberDetails
+
+Librarian::Stats
+Using Book_Table find all records where LastIssued is greater than 5 years ago
+return the Book Info
+
+Librarian::Overdue
+From Issue_Table find all Records where the Deadline has passed.
+Print all MemberDetails
+
+Issue::check_if_issued
+From MemberDetails find Num_Of_Books_To_Be_Issued for given MembershipCode
+
+*Issue::check_if_issued
+From Issue_Table check if for the Given ISBN and MembershipCode any entry exists or 
+not.
+
+Issue::check_reserved
+Using the ISBN and MembershipCode check if entry exists in Reserve_Table
+
+Issue::check_reserved
+Using the ISBN and MembershipCode remove the tuple from the Reserve_Table
+
+Issue::check_reserved
+Using ISBN get the Row and pass all info to the calling function
+
+Issue::issuing
+Using MembershipCode return Member type to calling Functions
+
+*Return::print_bill
+Using the ISBN and MembershipCode find an entry in the Issue_Table
+
+#Return::alert_reserved
+Using ISBN in the Reserve_Table the row and return it.
+
+Return::alert_reserved
+Using the MembershipCode in the MemberDetails table return Contact detials.
+
+Return::alert_reserved
+Using ISBN change the Date to the date given by Calling Function in Reserve_Table
+    
+ManageBook::registerBook
+All details are entered into the DataBase Book_Table
+
+*ManageBook::removeBook
+Using the Issue_Table the ISBN check if there is an entry or not 
+
+#ManageBook::removeBook
+Using ISBN in the Reserve_Table the row and return it.
+
+ManageBook::removeBook
+Using ISBN remove the Book fro Book_Table
+
+ManageMember::registerMember
+Insert all detials passed alongwith the MembershipCode into the MemberDetails
+
+*ManageMember::removeMember
+Using the MembershipCode see if there are any entries in Issue_Table
+
+ManageMember::removeMember
+Using the MembershipCode delete all entry from MemberDetails and Reserve_Table 

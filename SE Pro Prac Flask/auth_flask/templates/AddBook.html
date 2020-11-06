@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Add Book</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/addBook">
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="Name" placeholder="Name of The Book" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="Author" placeholder="Author of the Book" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="Publisher" placeholder="Publisher of the Book" autofocus="">
+                </div>
+            </div>
+            
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="Rack" placeholder="Rack Number of the Book" autofocus="">
+                </div>
+            </div>
+            
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="number" min="1" name="NumOfBooks" placeholder="Numbers of Copies of the Book" autofocus="">
+                </div>
+            </div>
+
+            <button class="button is-block is-info is-large is-fullwidth">Add Book</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

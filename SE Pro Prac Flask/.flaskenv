@@ -1,0 +1,3 @@
+FLASK_ENV=developement
+FLASK_APP=auth_flask
+FLASK_DEBUG=1
