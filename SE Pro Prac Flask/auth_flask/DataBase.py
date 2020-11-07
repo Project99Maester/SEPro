@@ -6,8 +6,7 @@ import datetime
 
 class DataBaseConnection():
     def __init__(self):
-        self.__DATABASE_URI = 'postgres+psycopg2://postgres:root@localhost:5432/LIS'
-        #'postgres+psycopg2://<username>:<password>@localhost:5432/LIS'
+        self.__DATABASE_URI = 'postgres+psycopg2://<username>:<password>@localhost:5432/LIS'
         self.__engine=create_engine(self.__DATABASE_URI)
         self.Session=sessionmaker(bind=self.__engine)
     
