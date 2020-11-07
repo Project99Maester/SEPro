@@ -6,29 +6,31 @@ class Librarian():
         self.__name=name
         self.__db=DataBaseManipulation(DataBaseConnection())
 
-    def Issue(self):
-        memcode=input("Enter the Membercode")
+    def Issue(self,memcode,isbn):
+        # memcode=input("Enter the Membercode")
         obj=Issue(MembershipCode=memcode)
         if obj.check_if_issued():
-            isbn=input("Enter the ISBN of the BOOK")
+            # isbn=input("Enter the ISBN of the BOOK")
             obj=Issue(MembershipCode=memcode,ISBN=isbn)
             if not obj.check_reserved():
-                obj.issuing()
-                print("Successfully Issued Book...")
+                #(True,0) print("Successfully Issued Book...")
+                
+                return obj.issuing()
             else:
-                print("Sorry the Book is reserved by a Member!!.....")
+                # print("Sorry the Book is reserved by a Member!!.....")
+                return (False,1)
         else:
-            print("Book is Not Available!Already Issued....")
+            # print("Book is Not Available!Already Issued....")
+            return (False,0)
 
-    def Return(self):
-        memcode=input("Enter the Membercode")
-        isbn=input("Enter the ISBN of the BOOK")
+    def Return(self,isbn,memcode):
+        # memcode=input("Enter the Membercode")
+        # isbn=input("Enter the ISBN of the BOOK")
         obj=Return(MembershipCode=memcode,ISBN=isbn)
         if Issue(MembershipCode=memcode,ISBN=isbn).check_if_issued():
             obj.print_bill()
             """
-            check the Reserve_Table using ISBN if anyone has reserved anything in the 
-            if condition inplace of True
+            check the Reserve_Table using ISBN if anyone has reserved anything
             """
             if self.__db.ISBNReserved(isbn):
                 obj.alert_reserved()
@@ -179,7 +181,7 @@ class Issue():
             return False
         else:
             reservation=self.__db.ReturnReserve(argISBN=self.__ISBN)
-            if reservation['DeadLine'] > datetime.date.today():
+            if reservation and reservation['DeadLine'] and reservation['DeadLine'] > datetime.date.today():
                 print("Someone has reserved this Book... Check After {}".format(reservation['DeadLine']))
                 return True
             else:
@@ -220,11 +222,11 @@ class Issue():
         #5
         num=self.__db.NumIssuedBooks(argMembershipCode=self.__MembershipCode)
         if num==0:
-            print("Quota Filled")
-            return
+            # print("Dont Decrease Further")
+            return (True,0)
         self.__db.DecreaseIssuedBooks(argMembershipCode=self.__MembershipCode)
         self.__db.AvailableFalse(argISBN=self.__ISBN)
-        return
+        return (True,0)
 
 
 class Return():

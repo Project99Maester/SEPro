@@ -6,7 +6,8 @@ import datetime
 
 class DataBaseConnection():
     def __init__(self):
-        self.__DATABASE_URI ='postgres+psycopg2://<username>:<password>@localhost:5432/LIS'
+        self.__DATABASE_URI = 'postgres+psycopg2://postgres:root@localhost:5432/LIS'
+        #'postgres+psycopg2://<username>:<password>@localhost:5432/LIS'
         self.__engine=create_engine(self.__DATABASE_URI)
         self.Session=sessionmaker(bind=self.__engine)
     
@@ -31,20 +32,30 @@ class DataBaseManipulation():
     def __init__(self,DataBaseConnectionObject):
         self.__session=DataBaseConnectionObject
     def search(self,searchitems):
-        whereString=""
-        str1=""
-        i=0
-        for keys,val in searchitems.items():
-            if i==0:
-                str1='"'+keys+'"'+"="+"\'"+str(val)+"\'"
-                i+=1
-            else:
-                whereString+=(" OR "+'"'+keys+'"'+"="+"'"+val+"'")
-        queryString="SELECT * FROM booktable WHERE {}{}".format(str1,whereString)
-        s=scoped_session(self.__session.Session)
-        results=s.execute(queryString)
-        s.close()
-        ans=[self.InfoBook(argISBN=i[0]) for i in results if i[-1]]
+        with self.__session.session_scope() as s:
+            results=s.query(booktable.ISBN)\
+                .filter(booktable.Available==True,booktable.Requested==False)\
+                    .filter(
+                        (booktable.ISBN == searchitems[0]) |\
+                             (booktable.Title == searchitems[1]) |\
+                                  (booktable.Author == searchitems[2]) |\
+                                       (booktable.Publisher == searchitems[3])
+                            ).all()
+        # whereString=""
+        # str1=""
+        # i=0
+        # for keys,val in searchitems.items():
+        #     if i==0:
+        #         str1='"'+keys+'"'+"="+"\'"+str(val)+"\'"
+        #         i+=1
+        #     else:
+        #         whereString+=(" OR "+'"'+keys+'"'+"="+"'"+val+"'")
+        # whereString+=(" AND "+'"'+'Available'+'"'+"="+"'"+"True"+"'")
+        # queryString="SELECT * FROM booktable WHERE {}{}".format(str1,whereString)
+        # s=scoped_session(self.__session.Session)
+        # results=s.execute(queryString)
+        # s.close()
+        ans=[self.InfoBook(argISBN=i[0]) for i in results]
 
         return ans
     def AvailableTrue(self,argISBN):
@@ -161,6 +172,8 @@ Print all MemberDetails
         ans=None
         with self.__session.session_scope() as s:
             ans=s.query(MemberTable.Num_Of_Books_To_Be_Issued).filter(MemberTable.MembershipCode==argMembershipCode).first()
+        # print('$$'*50)
+        # print(ans)
         return ans[0]
 
     def IssueExists(self,argISBN=None,argMembershipCode=None):
@@ -180,6 +193,7 @@ Print all MemberDetails
             with self.__session.session_scope() as s:
                 if s.query(IssueTable).filter(IssueTable.ISBN==argISBN).first() is not None:
                     ans.append(s.query(IssueTable).filter(IssueTable.ISBN==argISBN).first().__dict__)
+                    print(ans)
         else:
             with self.__session.session_scope() as s:
                 for i in s.query(IssueTable).filter(IssueTable.MembershipCode==argMembershipCode).all():
@@ -211,11 +225,13 @@ Print all MemberDetails
                 num=s.query(ReserveTable)\
                         .filter(ReserveTable.ISBN==argISBN)\
                             .delete(synchronize_session=False)
+                # s.query(booktable).filter(booktable.ISBN==argISBN).update({booktable.Requested:False},synchronize_session=False)
         else:
             with self.__session.session_scope() as s:
                 num=s.query(ReserveTable)\
                         .filter(ReserveTable.ISBN==argISBN,ReserveTable.MembershipCode==argMembershipCode)\
                             .delete(synchronize_session=False)
+                # s.query(booktable).filter(booktable.ISBN==argISBN).update({booktable.Requested:False},synchronize_session=False)
             if num>1:
                 print("More than one record is deleted")
 
@@ -289,12 +305,14 @@ Print all MemberDetails
             s.add(MemberObject)
 
 
-    def InsertReserve(self,ReserveObject):
+    def InsertReserve(self,ReserveObject,ISBN):
         """
         Insert all detials passed alongwith the MembershipCode into the MemberDetails
         """
         with self.__session.session_scope() as s:
             s.add(ReserveObject)
+            # s.query(booktable).filter(booktable.ISBN==ISBN).\
+                # update({booktable.Requested:True},synchronize_session=False)
 
     def RemoveMember(self,argMembershipCode):
         """

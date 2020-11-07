@@ -6,25 +6,17 @@ class Member():
         self.__MembershipCode=MembershipCode
         self.__db=DataBaseManipulation(DataBaseConnection())
 
-    def search(self):
+    def search(self,ISBN='',Title='',Author='',Publisher=''):
         """
         Depending upon the various parameters query the DB and return Results.
         Such that ISBN found from Book_Table are not in Issue_Table.
         """
-        search={}
-        ISBN=input("Enter ISBN: ")
-        if len(ISBN)!=0:
-            search['ISBN']=ISBN
-        Title=input("Enter Title: ")
-        if len(Title)!=0:
-            search['Title']=Title
-        Author=input("Enter Author: ")
-        if len(Author)!=0:
-            search['Author']=Author
-        Publisher=input("Enter Publisher: ")
-        if len(Publisher)!=0:
-            search['Publisher']=Publisher
-        print(self.__db.search(search))
+        search=[]
+        search.append(ISBN)
+        search.append(Title)
+        search.append(Author)
+        search.append(Publisher)
+        return self.__db.search(search)
         
     def reserve(self):
         """
@@ -63,6 +55,7 @@ class Reserve():
             ReserveTable(
                 ISBN=self.__ISBN,
                 MembershipCode=self.__MembershipCode
-            )
+            ),
+            ISBN=self.__ISBN
         )
     

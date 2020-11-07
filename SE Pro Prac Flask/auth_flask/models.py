@@ -14,6 +14,8 @@ class booktable(db.Model):
     Rack=db.Column(db.Integer,nullable=False)
     LastIssued=db.Column(db.Date,nullable=True)
     Available=db.Column(db.Boolean,nullable=False)
+    Requested=db.Column(db.Boolean,nullable=False,default=False)
+    RequestedBy=db.Column(db.String(10),nullable=True)
     
     def __repr__(self):
         return "<Book(title='{}',ISBN='{}', author='{}')>"\
@@ -46,7 +48,7 @@ class IssueTable(db.Model):
     ISBN=db.Column(db.String(10),primary_key=True)
     MembershipCode=db.Column(db.String(10),primary_key=True)
     DeadLine=db.Column(db.Date,nullable=False)
-    Available=db.Column(db.Boolean,nullable=False)
+    # Available=db.Column(db.Boolean,nullable=False)
     
     def __repr__(self):
         return "<Issue(ISBN='{}', MembershipCode='{}',Deadline='{}')>"\

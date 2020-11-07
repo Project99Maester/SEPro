@@ -1,3 +1,5 @@
+from flask.wrappers import Request
+from auth_flask.Member import Member
 from datetime import timedelta
 from os import name
 from flask import Blueprint, render_template,flash,url_for,redirect
@@ -7,7 +9,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 # from werkzeug.utils import redirect
 from . import db
-from .models import User,booktable
+from .models import User,booktable,IssueTable
 from . import Librarian
 import datetime
 main = Blueprint('main', __name__)
@@ -195,19 +197,42 @@ def RemoveBook():
 def IssueBook():
     if current_user.type=='admin':
         if request.method=='GET':
-            # return render_template('IssueBook.html')
-            pass
+            books=booktable.query.with_entities(booktable.Title,booktable.RequestedBy,booktable.ISBN)\
+                .filter(booktable.Requested==True).all()
+            return render_template('IssueBook.html',results=books)
         else:
-            pass
+            books=booktable.query.with_entities(booktable.RequestedBy,booktable.ISBN)\
+                .filter(booktable.ISBN==request.form['options']).first()
+            booktable.query.filter_by(ISBN=request.form['options'])\
+                .update({booktable.Requested:False,booktable.RequestedBy:None})
+            db.session.commit()
+            
+            Librarian.Librarian(name=current_user.name).Issue(memcode=books[0],isbn=books[1])
+            # print("$$$$"*100)
+            # print(books)
+            flash("Request for book with ISBN {} by {} is be granted ".format(books[1],books[0]))
+            return redirect(url_for('main.IssueBook'))
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
 
-@main.route('/returnBook')
+@main.route('/returnBook/<code>',methods=['GET','POST'])
 @login_required
-def ReturnBook():
+def ReturnBook(code):
     if current_user.type=='admin':
-        pass
+        if request.method=='GET':
+            book=IssueTable.query.with_entities(IssueTable.ISBN,IssueTable.MembershipCode,IssueTable.DeadLine).all()
+            return render_template('ReturnBook.html',books=book)
+        else:
+            if code=='1':
+                pass
+            else:
+                pass
+                isbn=request.form.get('options')
+                book=IssueTable.query.with_entities(IssueTable.MembershipCode).filter_by(ISBN=isbn).first()
+            Librarian.Librarian(name=current_user.name).Return()
+            flash("Book with ISBN {} has been Returned by {}".format(isbn,book[0]))
+            return redirect(url_for('main.ReturnBook'))
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
@@ -258,11 +283,43 @@ def Overdue():
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
 
-@main.route('/search')
+@main.route('/search',methods=['GET','POST'])
 @login_required
 def Search():
     if current_user.type=='user':
-        pass
+        if request.method == 'GET':
+            return render_template('search.html')
+        else:
+            Name=request.form['Name']
+            Author=request.form['Author']
+            Publisher=request.form['Publisher']
+            ISBN=request.form['ISBN']
+            results=Member(MembershipCode=current_user.otherinfo).search(
+                ISBN=ISBN,
+                Title=Name,
+                Author=Author,
+                Publisher=Publisher
+            )
+            if len(results)!=0:
+                return render_template('search.html',results=results,form=request.form)
+            else:
+                flash("No Matches for the Given Combo. Try and Change it.")
+                return render_template('search.html',form=request.form)
+            # return redirect(url_for('main.Search'))
+    else:
+        flash('You are Not Authorised!!')
+        return redirect(url_for('main.index'))
+
+@main.route('/requestIssue',methods=['POST'])
+@login_required
+def RequestIssue():
+    if current_user.type=='user':
+        booktable.query.filter(booktable.ISBN==request.form['options'])\
+            .update({booktable.Requested:True,booktable.RequestedBy:current_user.otherinfo},synchronize_session=False)
+        db.session.commit()
+        # print(request.form['options'])
+        flash("Book with ISBN {} is Requested to Reserve.".format(request.form['options']))
+        return redirect(url_for('main.Search'))
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
