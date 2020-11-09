@@ -16,15 +16,18 @@ class Member():
         search.append(Title)
         search.append(Author)
         search.append(Publisher)
+        search.append(self.__MembershipCode)
         return self.__db.search(search)
         
-    def reserve(self):
+    def reserve(self,isbn):
         """
         Call Object of Reserve Class
         """
-        obj=Reserve(self.__MembershipCode,input("ENter the ISBN of Book"))
-        if not obj.check_reserved():
-            obj.reserve()
+        obj=Reserve(self.__MembershipCode,isbn)
+        resp=obj.check_reserved()
+        if not resp[0]:
+            return obj.reserve()
+        return (not resp[0],resp[1])
         
 
 class Reserve():
@@ -38,14 +41,12 @@ class Reserve():
         Using the ISBN check if the Book is Issued then check if previously Reserved.
         If not return False Else Return True
         """
-        if len(self.__db.IssueExists(argISBN=self.__ISBN))==0:
-            print("Book is Available TO Issue.No Need to Reserve")
-            return True
+        if len(self.__db.IssueExists(argISBN=self.__ISBN))==0:            
+            return (True,"Book is Available TO Issue.No Need to Reserve")
         else:
-            if self.__db.ReserveExists(argISBN=self.__ISBN) is not None:
-                print("Book is already Reserved!!! Cannot Reserve Again")
-                return True
-        return False
+            if self.__db.ReserveExists(argISBN=self.__ISBN) is not None:   
+                return (True,"Book is already Reserved!!! Cannot Reserve Again")
+        return (False,)
 
     def reserve(self):
         """
@@ -58,4 +59,5 @@ class Reserve():
             ),
             ISBN=self.__ISBN
         )
+        return (True,)
     

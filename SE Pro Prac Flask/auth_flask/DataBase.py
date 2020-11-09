@@ -6,7 +6,8 @@ import datetime
 
 class DataBaseConnection():
     def __init__(self):
-        self.__DATABASE_URI = 'postgres+psycopg2://<username>:<password>@localhost:5432/LIS'
+        self.__DATABASE_URI = 'postgres+psycopg2://postgres:root@localhost:5432/LIS'
+        #'postgres+psycopg2://<username>:<password>@localhost:5432/LIS'
         self.__engine=create_engine(self.__DATABASE_URI)
         self.Session=sessionmaker(bind=self.__engine)
     
@@ -32,14 +33,16 @@ class DataBaseManipulation():
         self.__session=DataBaseConnectionObject
     def search(self,searchitems):
         with self.__session.session_scope() as s:
+            subquerys=s.query(ReserveTable.ISBN).filter( ( ReserveTable.DeadLine < datetime.date.today() ) | (ReserveTable.MembershipCode!=searchitems[4])).subquery()
             results=s.query(booktable.ISBN)\
-                .filter(booktable.Available==True,booktable.Requested==False)\
+                .filter(booktable.Available==True,booktable.Requested==False,~booktable.ISBN.in_(subquerys))\
                     .filter(
                         (booktable.ISBN == searchitems[0]) |\
                              (booktable.Title == searchitems[1]) |\
                                   (booktable.Author == searchitems[2]) |\
                                        (booktable.Publisher == searchitems[3])
                             ).all()
+            
         # whereString=""
         # str1=""
         # i=0
@@ -192,12 +195,15 @@ Print all MemberDetails
             with self.__session.session_scope() as s:
                 if s.query(IssueTable).filter(IssueTable.ISBN==argISBN).first() is not None:
                     ans.append(s.query(IssueTable).filter(IssueTable.ISBN==argISBN).first().__dict__)
-                    print(ans)
+                    # print(ans)
         else:
             with self.__session.session_scope() as s:
-                for i in s.query(IssueTable).filter(IssueTable.MembershipCode==argMembershipCode).all():
-                    ans.append(i.__dict__)
-
+                lis=s.query(IssueTable).filter(IssueTable.MembershipCode==argMembershipCode).all()
+                for i in lis:
+                    dictinfo=dict(i.__dict__)
+                    # print(dictinfo)
+                    ans.append(dictinfo)
+        # print(ans)
         return ans
 
     def ReserveExists(self,argISBN,argMembershipCode=None):

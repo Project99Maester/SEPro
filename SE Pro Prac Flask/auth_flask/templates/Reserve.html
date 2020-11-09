@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Issue Books</h3>
+    <h3 class="title">Reserve Issued Books</h3>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
@@ -52,14 +52,14 @@
             <button class="button is-block is-info is-medium ">Search Book</button>
         </div>
         
-    </form> -->
+    </form>
 <br>
-<br>
+<br> -->
     {% if results %}
     <div class="column is-4 is-offset-4">
-        <h3 class="title">Requests(Book)</h3>
+        <h3 class="title"></h3>
     <br>
-    <form action="\issueBook" method="post">
+    <form action="\reserve" method="post">
         <ul>
         {% for result in results %}
         <br>
@@ -69,11 +69,11 @@
             <p class="control is-medium">
                 Name of Book : {{ result[0] }} <br>
                 ISBN of Book : {{ result[2] }} <br>
-                Member with MembershipCode : {{ result[1]}}
-                
+                Author of Book : {{ result[1] }} <br>
+                Publisher of Book : {{ result[3] }} <br>
             </p>
             <!-- <input type="hidden" value=""> -->
-            <button class="button is-block is-info is-medium" name="options" value="{{ result.ISBN }}">Request Granted.</button>
+            <button class="button is-block is-info is-medium" name="options" value="{{ result[2] }}">Reserve Book</button>
         </div>
     </li>
         {% endfor %}
@@ -81,7 +81,11 @@
     </form>
     </div>
     {% else %}
-    No More Issue Requests.
+    <div class="field">
+        <div class="control">
+            No Books to Reserve. Check Issue!!!
+        </div>
+    </div>
     {% endif %}
 
 </div>

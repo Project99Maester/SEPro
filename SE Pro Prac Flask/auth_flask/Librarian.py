@@ -23,12 +23,14 @@ class Librarian():
             # print("Book is Not Available!Already Issued....")
             return (False,0)
 
-    def Return(self,isbn,memcode):
+    def Return(self,isbn,memcode,op=1):
         # memcode=input("Enter the Membercode")
         # isbn=input("Enter the ISBN of the BOOK")
         obj=Return(MembershipCode=memcode,ISBN=isbn)
+
         if Issue(MembershipCode=memcode,ISBN=isbn).check_if_issued():
-            obj.print_bill()
+            if op==1:
+                return obj.print_bill()
             """
             check the Reserve_Table using ISBN if anyone has reserved anything
             """
@@ -46,7 +48,7 @@ class Librarian():
             Increase the Num_Of_Books_To_Be_Issued by One in Member_Detail Table
             """
             self.__db.IncreaseIssuedBooks(argMembershipCode=memcode)
-            print("Successfully Returned Book....")
+            
         else:
             print("No record for the given Combination of MembershipCode and ISBN")
     
@@ -146,6 +148,7 @@ class Issue():
                 if books is not None:
                     print("The Following Books are Issued..")
                     for book in books:
+                        # print(book)
                         print(self.__db.InfoBook(book['ISBN']))
                 return True
         else:
@@ -248,11 +251,14 @@ class Return():
 
         """
         ret=self.__db.IssueExists(argISBN=self.__ISBN,argMembershipCode=self.__MembershipCode)
+        ans=''
         if ret[0]['DeadLine'] < datetime.date.today():
-            print("You have missed the Deadline.You have to pay the Fine. \nCalulating Fine")
+            
+            ans+="You have missed the Deadline.You have to pay the Fine. \nCalulating Fine"
             pen_day=(datetime.date.today()-ret[0]['DeadLine']).days
-            print("Penalty is {} Rupees. Pay Upfront Please".format(pen_day*10))
-    
+            ans+=" Number of Days past Return Date is {}. Penalty is {} Rupees. Pay Upfront Please".format(pen_day,pen_day*10)
+            return (True,ans)
+        return (False,'')    
     def alert_reserved(self):
         """
         1) Using the ISBN check in Reserve_Table and get their MembershipCode from the entry.
