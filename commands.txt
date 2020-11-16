@@ -1,0 +1,6 @@
+flask : conda install -c anaconda flask :  pip install Flask
+flask_login  : conda install -c anaconda flask-login  : pip install Flask-Login
+flask_sqlalchemy :  conda install -c conda-forge flask-sqlalchemy  : pip install Flask-SQLAlchemy
+sqlalchemy : conda install -c anaconda sqlalchemy  : pip install SQLAlchemy
+python dot env : conda install -c conda-forge python-dotenv : pip install python-dotenv
+psycopg : conda install -c anaconda psycopg2 : pip install psycopg2
