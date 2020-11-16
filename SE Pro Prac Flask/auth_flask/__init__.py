@@ -9,7 +9,7 @@ def create_app():
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres+psycopg2://postgres:root@localhost:5432/LIS'
-    app.config['SQLALCHEMY_TRACK_MODIFICATION']=False
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
     db.init_app(app)
 
     
