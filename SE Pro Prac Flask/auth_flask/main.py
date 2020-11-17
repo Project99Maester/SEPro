@@ -111,15 +111,20 @@ def RemoveMember():
             email=request.form['options']
             if email:
                 user=User.query.filter_by(email=email).first()
-                db.session.query(User).filter(User.email==email)\
-                    .delete(synchronize_session=False)
-                # Call Remove Member Function from the Bussiness Logic
-                Librarian.Librarian(name=current_user.name).ManageMember(
+                resp=Librarian.Librarian(name=current_user.name).ManageMember(
                     choice=0,
                     MembershipCode=user.otherinfo
                     )
-                db.session.commit()
-                flash('Member Removed')
+                
+                if resp[0]:
+                    db.session.query(User).filter(User.email==email)\
+                    .delete(synchronize_session=False)
+                # Call Remove Member Function from the Bussiness Logic
+                
+                    db.session.commit()
+                    flash(resp[1])
+                else:
+                    flash(resp[1])
             return redirect(url_for('main.RemoveMember'))
     else:
         flash('You are Not Authorised!!')
@@ -263,11 +268,13 @@ def Statistics():
     if current_user.type=='admin':
         if request.method=='GET':
             lis=Librarian.Librarian(name=current_user.name).Stats()
-            return render_template('Stats.html',books=lis)
+            return render_template('Stats.html',lis=lis)
         else:
             isbn=request.form['options']
             if isbn:
-                # Call Remove Member Function from the Bussiness Logic
+                # # Call Remove Member Function from the Bussiness Logic
+                # if IssueTable.query.filter(IssueTable.ISBN==isbn).first() is not None:
+
                 resp=Librarian.Librarian(name=current_user.name).BookManage(
                     choice=0,
                     ISBN=isbn
@@ -276,9 +283,9 @@ def Statistics():
                     flash('Book with ISBN {} is Removed'.format(isbn))
                 else:
                     if resp[1]==1:
-                        flash('Book with ISBN {} Cannot Be Removed as Issued to Member with ISBN {}'.format(isbn,resp[2]))
+                        flash('Book with ISBN {} Cannot Be Removed as Issued to Member with MembershipCode {}'.format(isbn,resp[2]['MembershipCode']))
                     else:
-                        flash('Book with ISBN {} Cannot Be Removed as Reserved by Member with ISBN {}. Check after 7 days.'.format(isbn,resp[2]))
+                        flash('Book with ISBN {} Cannot Be Removed as Reserved by Member with MembershipCode {}. Check after 7 days.'.format(isbn,resp[2]['MembershipCode']))
             return redirect(url_for('main.Statistics'))
     else:
         flash('You are Not Authorised!!')
@@ -290,8 +297,8 @@ def Overdue():
     if current_user.type=='admin':
         lis=Librarian.Librarian(name=current_user.name).Overdue()
         if request.method == 'GET':
-            # ALERT ALERT CHANGE IT AFTERWARDS
-            return render_template('Overdue.html',lis=[{'name':'Subhasish','MembershipCode':'123'}])
+            members=Librarian.Librarian(name=current_user.name).Overdue()
+            return render_template('Overdue.html',lis=members)
         else:
             """
             Send Email
@@ -341,7 +348,7 @@ def RequestIssue():
                 .update({booktable.Requested:True,booktable.RequestedBy:current_user.otherinfo},synchronize_session=False)
             db.session.commit()
             # print(request.form['options'])
-            flash("Book with ISBN {} is Requested to Reserve.".format(request.form['options']))
+            flash("Book with ISBN {} is Requested For Issue.".format(request.form['options']))
         else:
             flash("Limit Reached!!!!Cannot Issue Anymore Book!!!! Return Some!! Contact librarian!!")
         return redirect(url_for('main.Search'))

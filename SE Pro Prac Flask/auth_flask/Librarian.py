@@ -48,9 +48,10 @@ class Librarian():
             Increase the Num_Of_Books_To_Be_Issued by One in Member_Detail Table
             """
             self.__db.IncreaseIssuedBooks(argMembershipCode=memcode)
-            
+            return (True,'')
         else:
-            print("No record for the given Combination of MembershipCode and ISBN")
+            # print("No record for the given Combination of MembershipCode and ISBN")
+            return (False,"No record for the given Combination of MembershipCode and ISBN")
     
     def Stats(self):
         """
@@ -85,7 +86,7 @@ class Librarian():
         From the Issue_Table get all the Records where Deadline is expired wrt current Date.
         Print all the Member Details.
         """
-        print("Deadline of These Members are Passed:")
+        # print("Deadline of These Members are Passed:")
         return self.__db.IssueDeadlinePassed()
         
     def ManageMember(self,choice,name=None,email=None,Category=None,MembershipCode=None):
@@ -98,8 +99,8 @@ class Librarian():
             return MembershipCode
 
         elif choice==0:
-            ManageMember(MembershipCode=MembershipCode).removeMember()
-            return
+            return ManageMember(MembershipCode=MembershipCode).removeMember()
+            
         else:
             print("Invalid Input...")
             return
@@ -418,10 +419,12 @@ class ManageMember():
         """
         Issue=self.__db.IssueExists(argMembershipCode=self.__MembershipCode)
         if Issue:
-            print("Person Has Issued Book.First Return Those then Deletion cna occur...")
+            resp="Person Has Issued Book.First Return Those then Deletion can occur ISBN are "
+            
             for books in Issue:
-                print(self.__db.InfoBook(argISBN=books['ISBN']))
+                resp+=str(books['ISBN'])+" "
+            return (False,resp)
         else:
             self.__db.RemoveMember(argMembershipCode=self.__MembershipCode)
-            print("Removed the Member!!!")
+            return (True,"Removed the Member!!!")
         

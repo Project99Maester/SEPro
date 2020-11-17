@@ -14,19 +14,20 @@
         {% endif %}
         {% endwith %}
 
-        {% if books %}
+        {% if lis %}
         <form method="POST" action="/stats">
                 <div class="field">
                     <div class="control">
                         <div class="content">
-                            <ul>
-                                {% for ele in lis %}
-                                <li>
-                                    Member {{ ele.name }} with ID {{ ele.MembershipCode }}
-                                </li>
+                                {% for book in lis %}
+                              
+                                <div class="field">
+                                    <div class="control">
+                                        <input type="radio" name="options" id="{{ book.ISBN }}" value="{{ book.ISBN }}" class="input-is-large">{{ book.Title }} :: {{ book.ISBN }} :: {{ book.Publisher }}</input>
+                                    </div>
+                                </div>
                                 {% endfor %}
 
-                            </ul>
                         </div>
                     </div>
                 </div>

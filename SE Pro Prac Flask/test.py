@@ -1,5 +1,5 @@
-from DataBaseExamples.DataBase import DataBaseConnection,DataBaseManipulation
-from DataBaseExamples.Models import ReserveTable,IssueTable,MemberTable,booktable
+from auth_flask.DataBase import DataBaseConnection,DataBaseManipulation
+from auth_flask.models import ReserveTable,IssueTable,MemberTable,booktable
 import datetime
 
 dbConn=DataBaseConnection()

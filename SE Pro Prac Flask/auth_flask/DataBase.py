@@ -147,7 +147,7 @@ datetime.datetime.now() - datetime.timedelta(days=3*365)
         """
         lis=None
         with self.__session.session_scope() as s:
-            lis=s.query(booktable.ISBN).filter(booktable.LastIssued <= datetime.datetime.now() - datetime.timedelta(days=5*365)).all()
+            lis=s.query(booktable.ISBN).filter(booktable.LastIssued <= (datetime.datetime.now() - datetime.timedelta(days=5*365))).all()
         ans=[]
         for i in lis:
             ans.append(self.InfoBook(i[0]))
