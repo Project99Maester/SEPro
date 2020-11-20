@@ -8,6 +8,6 @@ change SE Pro Prac Flask\auth_flask\DataBase.py and SE Pro Prac Flask\auth_flask
 
 Inside SE Pro Prac Flask file run in terminal:
 
-1) python dbcreate.py
+1) python dbcreate.py (Required in the first run)
 
-2) flask run
+2) flask run (Required in all sub-sequent runs)
