@@ -80,6 +80,8 @@
     <a href="/newAdmin">Add an admin</a>
     <a href="/viewAdmins">View all admins</a>
   </div>
+  {% endif %}
+
   {% if current_user.type == 'admin' %}
   <div id="mySidenavigationBar" class="sidenavigationBar">
     <a href="javascript:void(0)" class="closebutton" onclick="closeNavigation()">&times;</a>
@@ -127,7 +129,7 @@
                             <a href="{{ url_for('auth.signup') }}" class="navbar-item">
                                 Sign Up
                             </a>
-                            {% endif %}
+                            {% else %}
                             <a onclick="openNavigation()" class="navbar-item">
                               More Options
                             </a>

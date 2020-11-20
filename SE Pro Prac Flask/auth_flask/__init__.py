@@ -13,7 +13,7 @@ def create_app():
         return render_template("page404.html") 
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres+psycopg2://postgres:hinduBale@localhost:5432/LIS'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres+psycopg2://postgres:root@localhost:5432/LIS'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
     db.init_app(app)
 
