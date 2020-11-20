@@ -67,7 +67,8 @@
                 {% for book in books %}
                 <div class="field">
                     <div class="control">
-                        <input style= "margin-right:5%" type="radio" name="options" id="{{ book.ISBN }}" value="{{ book.ISBN }}" class="input-is-large">{{ book.Title }}:{{ book.Author }}:{{ book.ISBN }}</input>
+                        <input style= "margin-right:5%" type="radio" name="options" id="{{ book.ISBN }}" value="{{ book.ISBN }}" class="input-is-large" required>
+                        Title: {{ book.Title }}<br> &emsp; &ensp;Author: {{ book.Author }}<br> &emsp; &ensp;ISBN: {{ book.ISBN }}<br> &emsp; &ensp;</input>
                     </div>
                 </div>
                 {% endfor %}

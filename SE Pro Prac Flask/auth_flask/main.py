@@ -21,16 +21,144 @@ def index():
         User(email='admin@admin.com', name='Superuser', password=generate_password_hash('Admin', method='sha256'),type='superuser',activated=True)
         )
         db.session.add(
+        User(email='harvey@iiit-bh.com', name='harvey', password=generate_password_hash('123', method='sha256'),type='admin',activated=True)
+        )
+        db.session.add(
+        User(email='specter@iiit-bh.com', name='specter', password=generate_password_hash('123', method='sha256'),type='user',activated=True,otherinfo="1")
+        )
+        db.session.add(
+            MemberTable(
+                MembershipCode="1",
+                Name="specter",
+                Category="UG",
+                Num_Of_Books_To_Be_Issued=2,
+                email="specter@iiit-bh.com"
+            )
+        )
+        db.session.add(
+        User(email='mike@iiit-bh.com', name='mike', password=generate_password_hash('123', method='sha256'),type='user',activated=True,otherinfo="2")
+        )
+        db.session.add(
+            MemberTable(
+                MembershipCode="2",
+                Name="mike",
+                Category="PG",
+                Num_Of_Books_To_Be_Issued=4,
+                email="mike@iiit-bh.com"
+            )
+        )
+
+        db.session.add(
             booktable(
-                ISBN="123",
-                Title="Title",
-                Author="Author",
-                Publisher="Publisher",
-                Rack=1,
-                LastIssued=datetime.date.today(),#-timedelta(days=6*365),
+                ISBN="1",
+                Title="Sherlock Holmes",
+                Author="Sir Authur Conan Doyle",
+                Publisher="Roli Books",
+                Rack=10,
+                LastIssued=datetime.date.today(),
                 Available=True
             )
         )
+        db.session.add(
+            booktable(
+                ISBN="2",
+                Title="The Alchemist",
+                Author="Paulo Coelho",
+                Publisher="Westlands Publications",
+                Rack=2,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=30),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="3",
+                Title="An American Tragedy",
+                Author="Theodore Dreiser",
+                Publisher="Jaico Publishers",
+                Rack=1,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=15),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="4",
+                Title="Anand Math",
+                Author="Bankim Chandra Chatterjee",
+                Publisher="Rupa Publications",
+                Rack=15,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=365*7),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="5",
+                Title="Ape and Essence",
+                Author="A. Huxley",
+                Publisher="Hachette India",
+                Rack=7,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=260),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="6",
+                Title="As you like it",
+                Author="William Shakespeare",
+                Publisher="Aleph Book Company",
+                Rack=12,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=5*366),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="7",
+                Title="Arms and the Man",
+                Author="George Bernard Shaw",
+                Publisher="Scholastic India",
+                Rack=9,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=10),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="8",
+                Title="Bitter Sweet",
+                Author="Noel Coward",
+                Publisher="24by7Publishing",
+                Rack=1,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=1),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="9",
+                Title="Area of Darkness",
+                Author="V.S. Naipaul",
+                Publisher="Pothi",
+                Rack=10,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=7),
+                Available=True
+            )
+        )
+        db.session.add(
+            booktable(
+                ISBN="10",
+                Title="Arthasatra",
+                Author="Kautilya",
+                Publisher="Leadstart Publishing",
+                Rack=4,
+                LastIssued=datetime.date.today()-datetime.timedelta(days=3),
+                Available=True
+            )
+        )
+
         db.session.commit()
     return render_template('index.html')
 
@@ -214,7 +342,7 @@ def IssueBook():
             elif not resp[0] and resp[1]==1:
                 flash("Can't Issue Book Already Reserved")
             else:
-                flash("Request for book with ISBN {} by {} is be granted ".format(books[1],books[0]))
+                flash("Request for book with ISBN {} by {} is granted ".format(books[1],books[0]))
 
             booktable.query.filter_by(ISBN=request.form['options'])\
                 .update({booktable.Requested:False,booktable.RequestedBy:None})
@@ -315,6 +443,7 @@ def Overdue():
 def Search():
     if current_user.type=='user':
         if request.method == 'GET':
+            
             return render_template('search.html')
         else:
             Name=request.form['Name']
@@ -374,7 +503,7 @@ def Reserve():
             if not resp[0]:
                 flash(resp[1])
             else:
-                flash("Book with ISBN {} is Reserved for You. When Alerted please drop a Issue Request within 7 Days or else Reservation will Expire!")
+                flash("Book with ISBN {} is Reserved for You. When Alerted please drop a Issue Request within 7 Days or else Reservation will Expire!".format(isbn))
             return redirect(url_for('main.Reserve'))
     else:
         flash('You are Not Authorised!!')

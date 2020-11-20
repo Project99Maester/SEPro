@@ -113,6 +113,7 @@
             
             <tbody>
                 {% for book in books %}
+                <tr>
                 <th>{{ book.ISBN }}</th>
                 <td>{{ book.Title }}</td>
                 <td>{{ book.Author }}</td>
@@ -120,6 +121,7 @@
                 <td>{{ book.Rack }}</td>
                 <td>{{ book.Available }}</td>
                 <td>{{ book.LastIssued }}</td>
+            </tr>
                 {% endfor %}
             </tbody>
         </table>

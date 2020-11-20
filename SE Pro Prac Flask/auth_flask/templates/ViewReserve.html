@@ -109,9 +109,11 @@
             
             <tbody>
                 {% for reserve in Reserves %}
+                <tr>
                 <th>{{ reserve.ISBN }}</th>
                 <td>{{ reserve.MembershipCode }}</td>
                 <td>{{ reserve.DeadLine }}</td>
+            </tr>
                 {% endfor %}
             </tbody>
         </table>

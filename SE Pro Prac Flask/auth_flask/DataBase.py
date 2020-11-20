@@ -34,14 +34,29 @@ class DataBaseManipulation():
     def search(self,searchitems):
         with self.__session.session_scope() as s:
             subquerys=s.query(ReserveTable.ISBN).filter( ( ReserveTable.DeadLine < datetime.date.today() ) | (ReserveTable.MembershipCode!=searchitems[4])).subquery()
-            results=s.query(booktable.ISBN)\
-                .filter(booktable.Available==True,booktable.Requested==False,~booktable.ISBN.in_(subquerys))\
-                    .filter(
-                        (booktable.ISBN == searchitems[0]) |\
-                             (booktable.Title == searchitems[1]) |\
-                                  (booktable.Author == searchitems[2]) |\
-                                       (booktable.Publisher == searchitems[3])
-                            ).all()
+            results=s.query(booktable.ISBN,booktable.Title,booktable.Author,booktable.Publisher)\
+                .filter(booktable.Available==True,booktable.Requested==False,~booktable.ISBN.in_(subquerys)).all()
+            # print(results)
+            ans=[]
+            for book in results:
+                if searchitems[0]!='' and searchitems[0]==book[0]:
+                    ans.append(book[0])
+                    continue
+                if searchitems[1]!='' and searchitems[1] in book[1]:
+                    ans.append(book[0])
+                    continue
+                if searchitems[2]!='' and  searchitems[2] in book[2]:
+                    ans.append(book[0])
+                    continue
+                if searchitems[3]!='' and  searchitems[3] in book[3]:
+                    ans.append(book[0])
+                    continue
+                    # .filter(
+                    #     (booktable.ISBN == searchitems[0]) |\
+                    #          (booktable.Title.like(str(searchitems[1]))) |\
+                    #               (booktable.Author.like(str(searchitems[2]))) |\
+                    #                    (booktable.Publisher.like(str(searchitems[3])))
+                    #         ).all()
             
         # whereString=""
         # str1=""
@@ -57,9 +72,9 @@ class DataBaseManipulation():
         # s=scoped_session(self.__session.Session)
         # results=s.execute(queryString)
         # s.close()
-        ans=[self.InfoBook(argISBN=i[0]) for i in results]
-
-        return ans
+        anss=[self.InfoBook(argISBN=i) for i in ans]
+        print(ans)
+        return anss
     def AvailableTrue(self,argISBN):
         with self.__session.session_scope() as s:
             s.query(booktable).filter(booktable.ISBN==argISBN)\

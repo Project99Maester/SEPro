@@ -109,6 +109,7 @@
             
             <tbody>
                 {% for user in Users %}
+                <tr>
                 <th>{{ user.name }}</th>
                 <td>{{ user.email }}</td>
                 <td>
@@ -117,6 +118,7 @@
                         <input type="hidden" name="options" id="options" value="{{ user.id }}">
                     </form>
                 </td>
+            </tr>
                 {% endfor %}
             </tbody>
         </table>

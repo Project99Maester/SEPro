@@ -67,7 +67,10 @@
                 {% for user in users %}
                 <div class="field">
                     <div class="control">
-                        <input style= "margin-right:5%" type="radio" name="options" id="{{ user.email }}" value="{{ user.email }}" class="input-is-large">{{ user.name }}:{{ user.email }}</input>
+                        <input style= "margin-right:5%" type="radio" name="options" id="{{ user.email }}" value="{{ user.email }}" class="input-is-large" required>
+                        Member Name: {{ user.name }}<br> &emsp; &ensp;
+                        Email ID :{{ user.email }}<br> &emsp; &ensp;
+                        </input>
                     </div>
                 </div>
                 {% endfor %}

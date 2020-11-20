@@ -111,11 +111,13 @@
             
             <tbody>
                 {% for Member in Members %}
+                <tr>
                 <th>{{ Member.MembershipCode }}</th>
                 <td>{{ Member.Name }}</td>
                 <td>{{ Member.Category }}</td>
                 <td>{{ Member.Num_Of_Books_To_Be_Issued }}</td>
                 <td>{{ Member.email }}</td>
+            </tr>
                 {% endfor %}
             </tbody>
         </table>

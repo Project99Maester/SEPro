@@ -96,7 +96,7 @@
         </div>
         {% endif %}
         {% endwith %}
-        {% if Reserves %}
+        {% if Issues %}
         <table class="content-table">
             <thead>
                 <tr>
@@ -109,9 +109,11 @@
             
             <tbody>
                 {% for issue in Issues %}
+                <tr>
                 <th>{{ issue.ISBN }}</th>
                 <td>{{ issue.MembershipCode }}</td>
                 <td>{{ issue.DeadLine }}</td>
+            </tr>
                 {% endfor %}
             </tbody>
         </table>
