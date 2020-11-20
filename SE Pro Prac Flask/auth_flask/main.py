@@ -379,3 +379,52 @@ def Reserve():
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
+
+@main.route('/viewBook')
+@login_required
+def ViewBook():
+    if current_user.type=='admin':
+        books=booktable.query.all()
+        return render_template('ViewBook.html',books=books)
+    else:
+        flash('You are Not Authorised!!')
+        return redirect(url_for('main.index'))
+
+@main.route('/viewMem')
+@login_required
+def ViewMem():
+    if current_user.type=='admin':
+        pass
+    else:
+        flash('You are Not Authorised!!')
+        return redirect(url_for('main.index'))
+
+
+@main.route('/viewReserve')
+@login_required
+def ViewReserve():
+    if current_user.type=='admin':
+        pass
+    else:
+        flash('You are Not Authorised!!')
+        return redirect(url_for('main.index'))
+
+
+@main.route('/viewIssue')
+@login_required
+def ViewIssue():
+    if current_user.type=='admin':
+        pass
+    else:
+        flash('You are Not Authorised!!')
+        return redirect(url_for('main.index'))
+
+@main.route('/viewAdmin')
+@login_required
+def ViewAdmin():
+    if current_user.type=='superuser':
+        pass
+    else:
+        flash('You are Not Authorised!!')
+        return redirect(url_for('main.index'))
+
