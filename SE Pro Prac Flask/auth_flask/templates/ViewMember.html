@@ -48,8 +48,8 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class="column is-2 is-offset-4">
-    <h3 style = "color: rgb(44, 49, 139);" class="title">Book Table</h3>
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Member Table</h3>
     
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -60,35 +60,31 @@
         </div>
         {% endif %}
         {% endwith %}
-        {% if books %}
+        {% if Members %}
         <table class="table">
             <thead>
                 <tr>
-                    <th>ISBN of Book</th>
-                    <th>Name of the Book</th>
-                    <th>Author of Book</th>
-                    <th>Publisher</th>
-                    <th>Rack</th>
-                    <th>Available</th>
-                    <th>Last Issued</th>
-
+                    <th>Membership Code</th>
+                    <th>Member Name</th>
+                    <th>Category</th>
+                    <th>Number of Books To Be Issued</th>
+                    <th>Email</th>
+                    
                 </tr>
             </thead>
             
             <tbody>
-                {% for book in books %}
-                <th>{{ book.ISBN }}</th>
-                <td>{{ book.Title }}</td>
-                <td>{{ book.Author }}</td>
-                <td>{{ book.Publisher }}</td>
-                <td>{{ book.Rack }}</td>
-                <td>{{ book.Available }}</td>
-                <td>{{ book.LastIssued }}</td>
+                {% for Member in Members %}
+                <th>{{ Member.MembershipCode }}</th>
+                <td>{{ Member.Name }}</td>
+                <td>{{ Member.Category }}</td>
+                <td>{{ Member.Num_Of_Books_To_Be_Issued }}</td>
+                <td>{{ Member.email }}</td>
                 {% endfor %}
             </tbody>
         </table>
             {% else %}
-            No Books
+            No Members Yet.
             {% endif %}
         
     

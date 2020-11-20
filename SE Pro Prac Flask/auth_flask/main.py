@@ -394,7 +394,8 @@ def ViewBook():
 @login_required
 def ViewMem():
     if current_user.type=='admin':
-        pass
+        members=MemberTable.query.all()
+        return render_template('ViewMember.html',Members=members)
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
