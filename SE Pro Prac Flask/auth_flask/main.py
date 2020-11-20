@@ -405,7 +405,8 @@ def ViewMem():
 @login_required
 def ViewReserve():
     if current_user.type=='admin':
-        pass
+        Reserves=ReserveTable.query.all()
+        return render_template('ViewReserve.html',Reserves=Reserves)
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
@@ -415,16 +416,25 @@ def ViewReserve():
 @login_required
 def ViewIssue():
     if current_user.type=='admin':
-        pass
+        Issues=IssueTable.query.all()
+        return render_template('ViewIssue.html',Issues=Issues)
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))
 
-@main.route('/viewAdmin')
+@main.route('/viewAdmins',methods=['GET','POST'])
 @login_required
 def ViewAdmin():
     if current_user.type=='superuser':
-        pass
+        if request.method=='GET':
+            users=User.query.filter(User.type=="admin").all()
+            return render_template('UserView.html',Users=users)
+        else:
+            id=request.form['options']
+            User.query.filter(User.id==id).delete(synchronize_session=False)
+            db.session.commit()
+            flash("Admin Removed!!")
+            return redirect(url_for('main.ViewAdmin'))
     else:
         flash('You are Not Authorised!!')
         return redirect(url_for('main.index'))

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block mycss %}
+<style>
+    .buttonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 7.5%;
+    }
+
+    input {
+    font-size: 1.5rem;
+    padding: 1rem 3rem;
+    color: #f4f4f4;
+    }
+
+    .btnn {
+    text-decoration: none;
+    border: 1px solid rgb(146, 148, 248);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    }
+
+    .btnn:hover {
+    box-shadow: 1px 1px 25px 10px rgba(146, 148, 248, 0.4);
+    }
+
+    .btnn:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(146, 148, 248, 0.4),
+        transparent
+    );
+    transition: all 650ms;
+    }
+
+    .btnn:hover:before {
+    left: 100%;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Admin Table</h3>
+    
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="box">
+            <div class="notification is-danger">
+                {{ messages[0] }}.
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% if Users %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name of Admin</th>
+                    <th>Email of Admin</th>
+                    <th>Remove Admin</th>
+                    
+                </tr>
+            </thead>
+            
+            <tbody>
+                {% for user in Users %}
+                <th>{{ user.name }}</th>
+                <td>{{ user.email }}</td>
+                <td>
+                    <form action="\viewAdmins" method="post">
+                        <input class="button is-danger" type="submit" value="Remove Admin">
+                        <input type="hidden" name="options" id="options" value="{{ user.id }}">
+                    </form>
+                </td>
+                {% endfor %}
+            </tbody>
+        </table>
+            {% else %}
+            No Admins Yet.
+            {% endif %}
+        
+       
+    <div class="buttonContainer">
+        <input style="color:black" class = "btnn" type="button" value="Go Back" onclick="history.back(-1)" />
+    </div>
+</div>
+{% endblock %}
