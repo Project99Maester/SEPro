@@ -12,7 +12,7 @@ from . import db
 from .models import MemberTable, User,booktable,IssueTable,ReserveTable
 from . import Librarian
 import datetime
-main = Blueprint('main', __name__)
+main = Blueprint('main', __name__) 
 
 @main.route('/')
 def index():

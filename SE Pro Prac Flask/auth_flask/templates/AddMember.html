@@ -1,36 +1,135 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Auth Example</title>
+    <style>
+        .buttonContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 7.5%;
+        }
 
-<div class="column is-4 is-offset-4">
-    <h3 class="title">Add New Members</h3>
-    <div class="box">
-        
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="notification is-danger">
-                {{ messages[0] }}.
-            </div>
-        {% endif %}
-        {% endwith %}
-        {% if users %}
-        <form method="POST" action="/addMem">
-                {% for user in users %}
-                <div class="field">
-                    <div class="control">
-                        <input type="radio" name="options" id="{{ user.email }}" value="{{ user.email }}" class="input-is-large">{{ user.name }}:{{ user.email }}</input>
+        input {
+        font-size: 1.5rem;
+        padding: 1rem 3rem;
+        color: #f4f4f4;
+        }
+
+        .btnn {
+        text-decoration: none;
+        border: 1px solid rgb(146, 148, 248);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        }
+
+        .btnn:hover {
+        box-shadow: 1px 1px 25px 10px rgba(146, 148, 248, 0.4);
+        }
+
+        .btnn:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            transparent,
+            rgba(146, 148, 248, 0.4),
+            transparent
+        );
+        transition: all 650ms;
+        }
+
+        .btnn:hover:before {
+        left: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+</head>
+
+<body>
+    <section class="hero is-primary is-fullheight">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('main.index') }}" class="navbar-item">
+                                Home
+                            </a>
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('main.profile') }}" class="navbar-item">
+                                Profile
+                            </a>
+                            {% endif %}
+                            {% if not current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.login') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <a href="{{ url_for('auth.signup') }}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            {% endif %}
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+                                Logout
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                {% endfor %}
-            <button class="button is-block is-info is-large is-fullwidth">Add Member</button>
-        </form>
-        {% else %}
-        <div class="field">
-            <div class="control">
-                No more User Requests.
+            </nav>
+        </div>
+
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="column is-4 is-offset-4">
+                    <h3 class="title">Add New Members</h3>
+                    <div class="box">
+                        
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="notification is-danger">
+                                {{ messages[0] }}.
+                            </div>
+                        {% endif %}
+                        {% endwith %}
+                        {% if users %}
+                        <form method="POST" action="/addMem">
+                                {% for user in users %}
+                                <div class="field">
+                                    <div class="control">
+                                        <input style= "margin-right:5%" type="radio" name="options" id="{{ user.email }}" value="{{ user.email }}" class="input-is-large">{{ user.name }}:{{ user.email }}</input>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            <button class="button is-block is-info is-large is-fullwidth">Add Member</button>
+                        </form>
+                        {% else %}
+                        <div class="field">
+                            <div class="control">
+                                No more User Requests.
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                        <div class="buttonContainer">
+                            <input style="color:black" class = "btnn" type="button" value="Go Back" onclick="history.back(-1)" />
+                        </div>
+                </div>
             </div>
         </div>
-        {% endif %}
-    </div>
-</div>
-{% endblock %}
+    </section>
+</body>
+
+</html>

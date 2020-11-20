@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 # init SQLAlchemy so we can use it later in our models
@@ -7,8 +7,13 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
 
+    @app.errorhandler(404) 
+
+    def not_found(e): 
+        return render_template("page404.html") 
+
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres+psycopg2://postgres:root@localhost:5432/LIS'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres+psycopg2://postgres:hinduBale@localhost:5432/LIS'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
     db.init_app(app)
 
