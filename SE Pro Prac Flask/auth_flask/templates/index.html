@@ -1,19 +1,173 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
-<h1 class="title">
-  Library Information System
-</h1>
-<h2 class="subtitle">
-  Welcome to the LIS of IIIT Bhubaneswar :) <br/>
-</h2>
-<h1>
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-      <div class="notification is-danger">
-          {{ messages[0] }}.
-      </div>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IIIT-BH LIS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <style>
+      /* The side navigation menu */
+      .sidenavigationBar {
+        height: 100%; /* 100% Full-height */
+        width: 0; /* 0 width - change this with JavaScript */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Stay on top */
+        top: 0; /* Stay at the top */
+        left: 0;
+        background-color: #111; /* Black*/
+        overflow-x: hidden; /* Disable horizontal scroll */
+        padding-top: 60px; /* Place content 60px from the top */
+        transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+      }
+
+      /* The navigation menu links */
+      .sidenavigationBar a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+      }
+
+      /* When you mouse over the navigation links, change their color */
+      .sidenavigationBar a:hover {
+        color: #f1f1f1;
+      }
+
+      /* Position and style the close button (top right corner) */
+      .sidenavigationBar .closebutton {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+      }
+
+      /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+      #main {
+        transition: margin-left .5s;
+      }
+
+      /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+      @media screen and (max-height: 450px) {
+        .sidenavigationBar {padding-top: 15px;}
+        .sidenavigationBar a {font-size: 18px;}
+      } 
+    </style>
+    <script>
+    /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+    function openNavigation() {
+      document.getElementById("mySidenavigationBar").style.width = "300px";
+      document.getElementById("main").style.marginLeft = "300px";
+      document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    }
+
+    /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+    function closeNavigation() {
+      document.getElementById("mySidenavigationBar").style.width = "0";
+      document.getElementById("main").style.marginLeft = "0";
+      document.body.style.backgroundColor = "white";
+    } 
+    </script>
+</head>
+
+<body>
+  {% if current_user.type == 'superuser' %}
+  <div id="mySidenavigationBar" class="sidenavigationBar">
+    <a href="javascript:void(0)" class="closebutton" onclick="closeNavigation()">&times;</a>
+    <a href="/newAdmin">Add an admin</a>
+    <a href="/viewAdmins">View all admins</a>
+  </div>
   {% endif %}
-  {% endwith %}
-</h1>
-{% endblock %}
+
+  {% if current_user.type == 'admin' %}
+  <div id="mySidenavigationBar" class="sidenavigationBar">
+    <a href="javascript:void(0)" class="closebutton" onclick="closeNavigation()">&times;</a>
+    <a href="/addMem">Member Requests</a>
+    <a href="/removeMem">Member Dismissal</a>
+    <a href="/addBook">Add Books</a>
+    <a href="/remBook">Remove Books</a>
+    <a href="/issueBook">Issue Books</a>
+    <a href="/returnBook">Confirm Return</a>
+    <a href="/stats">Statistics</a>
+    <a href="/overdue">Overdue Books</a>
+    <a href="/viewBook">View Book Table</a>
+    <a href="/viewMem">View Member Table</a>
+    <a href="/viewReserve">View Reserve Table</a>
+    <a href="/viewIssue">View Issue Table</a>
+  </div>
+  {% endif %}
+  {% if current_user.type == 'user' %}
+  <div id="mySidenavigationBar" class="sidenavigationBar">
+    <a href="javascript:void(0)" class="closebutton" onclick="closeNavigation()">&times;</a>
+    <a href="/search">Search Books</a>
+    <a href="/reserve">Reserve Books</a>
+  </div>
+  {% endif %}
+  <div id="main">
+    <section class="hero is-primary is-fullheight">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('main.index') }}" class="navbar-item">
+                                Home
+                            </a>
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('main.profile') }}" class="navbar-item">
+                                Profile
+                            </a>
+                            {% endif %}
+                            {% if not current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.login') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <a href="{{ url_for('auth.signup') }}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            {% endif %}
+                            {% if current_user.is_authenticated %}
+                            <a onclick="openNavigation()" class="navbar-item">
+                              More Options
+                            </a>
+                            <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+                                Logout
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="hero-body">
+            <div class="container has-text-centered">
+              <h1 class="title">
+                Library Information System
+              </h1>
+              <h2 class="subtitle">
+                Welcome to the LIS of IIIT Bhubaneswar :) <br/>
+              </h2>
+              <h1>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="notification is-danger">
+                        {{ messages[0] }}.
+                    </div>
+                {% endif %}
+                {% endwith %}
+              </h1>
+            </div>
+        </div>
+    </section>
+  </div>
+</body>
+
+</html>
+
