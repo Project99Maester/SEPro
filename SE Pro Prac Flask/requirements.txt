@@ -24,7 +24,7 @@ lazy-object-proxy==1.4.3
 markupsafe==1.1.1
 mccabe==0.6.1
 passlib==1.7.4
-pip==20.2.3
+pip==23.3
 psycopg2==2.8.6
 pycparser==2.20
 pylint==2.6.0
